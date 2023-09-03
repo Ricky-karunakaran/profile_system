@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: News API
+  description: News API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3101
+tags:
+  - name: News
+    description: APIs of news
+paths:
+  /news:
+    description: News
+    get:
+      tags:
+        - News
+      description: get list of news
+      parameters:
+        - in: query
+          name: title
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: content
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            example: created
+        - in: query
+          name: tag
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: limit
+          required: false
+          shcema:
+            type: number
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalPages:
+                    type: number
+                    example: 2
+                  currentPage:
+                    type number:
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/get-news'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response-error'
+    post:
+      tags:
+        - News
+      description: add a news
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/post-news'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /news/{id}:
+    description: Get A News
+    get:
+      tags:
+        - News
+      description: get a news
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-news'
+components:
+  schemas:
+    get-news:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 64ef6954a082b88d14c11175
+        title:
+          type: string
+          example: Demo Title
+        content:
+          type: string
+          example: <b>Hello</b>
+        img:
+          type: object
+          properties:
+            mimetype:
+              type: string
+              example: image/png
+            file:
+              type: string
+              description: base64 string
+        created:
+          type: string
+          example: '2023-08-30T16:07:48.246Z'
+    post-news:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Demo Title
+        filename:
+          type: array
+          items:
+            type: string
+            format: binary
+        content:
+          type: string
+          example: Demo Content
+        tag:
+          type: string
+          example: Event
+    pagination:
+      type: object
+      properties:
+        currentPage:
+          type: number
+          example: 2
+        totalPages:
+          type: number
+          example: 5
+
+    response-error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Server Error. Please try later

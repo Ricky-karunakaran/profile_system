@@ -1,0 +1,12 @@
+{
+    "app":{
+        "name":"news-service",
+        "port":3101
+    },
+    "database":{
+        "url":"",
+        "username":"",
+        "password":"",
+        "name":"profile"
+    }
+}
